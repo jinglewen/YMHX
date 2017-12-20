@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc  
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd"
+	    default-autowire="byName">
+	    
+	<context:annotation-config />
+	<!-- 配置注解映射器  -->
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"></bean>
+	<!-- 配置注解适配器 -->
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"></bean>
+
+	<!-- 在实际开发中一般采用的是组件扫描的方式将controller里的类扫描进spring容器 -->
+	<context:component-scan base-package="com.ym.controller"> </context:component-scan> 
+	<!-- 把service下面的包扫描到spring组件里 -->
+ 	<context:component-scan base-package="com.ym.serviceImp"> </context:component-scan>
+ 	<!-- 把dao下面的包扫描到spring组件里 -->  
+ 	<context:component-scan base-package="com.ym.daoImp"> </context:component-scan>
+ 
+	<!-- springmvc拦截器配置 -->
+ 	<mvc:interceptors>  
+        <mvc:interceptor>  
+            <mvc:mapping path="/*.action"/> 
+            <bean class="com.ym.util.SessionFilter"/> 
+        </mvc:interceptor>  
+    </mvc:interceptors>
+ 
+</beans>      

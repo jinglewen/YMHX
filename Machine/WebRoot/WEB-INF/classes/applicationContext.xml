@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	<!-- 构建c3p0数据源  -->
+	<bean id="dataSource" destroy-method="close" class="com.mchange.v2.c3p0.ComboPooledDataSource">		
+		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+		<property name="jdbcUrl" value="jdbc:mysql://localhost:3344/machine?useUnicode=true&amp;characterEncoding=UTF-8"></property>
+		<property name="user" value="root"></property>
+		<property name="password" value="123"></property>
+		<property name="maxPoolSize" value="200"></property><!--连接池中保留的最大连接数。默认值: 15 -->
+		<property name="minPoolSize" value="1"></property><!-- 连接池中保留的最小连接数，默认为：3-->
+		<property name="initialPoolSize" value="5"></property><!-- 初始化连接池中的连接数，取值应在minPoolSize与maxPoolSize之间，默认为3-->
+		<property name="maxIdleTime" value="3600"></property><!-- 最大空闲时间，1000秒内未使用则连接被丢弃。若为0则永不丢弃。默认值: 0 -->
+		<property name="checkoutTimeout" value="1000"></property><!-- 当连接池连接耗尽时，客户端调用getConnection()后等待获取新连接的时间，超时后将抛出SQLException，如设为0则无限期等待。单位毫秒。默认: 0 -->
+		<property name="maxStatements" value="3"></property>
+		<property name="acquireIncrement" value="5"></property>		
+	</bean>
+	
+	<!-- 配置sessionFactory -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" destroy-method="destroy">
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 配置hibeinate属性 -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>			
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">false</prop>
+			    <prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop> 
+			</props>
+		</property>
+		<!-- 配置映射文件 -->
+		<property name="mappingLocations">
+		    <value>classpath:com/ym/entity/*.hbm.xml</value>
+		</property>
+	</bean>
+	 
+	<!-- 声明式事务的配置 构建切面的类-->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- 配置事务的AOP增强 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+	   <tx:attributes>
+	      <tx:method name="*"/>
+	      <tx:method name="Search*" read-only="true"></tx:method>
+	      <tx:method name="Add*" rollback-for="EXCEPTION"/>
+	      <tx:method name="Deletee*" rollback-for="EXCEPTION"/>
+	      <tx:method name="Get*" propagation="NEVER"/>
+	      <tx:method name="Get*" propagation="NEVER"/>
+	   </tx:attributes>
+	</tx:advice>
+	<!-- 配置切面 -->
+	<aop:config>
+	   <aop:pointcut expression="execution(* com.ym.serviceImp..*(..))" id="txPointCut"/>
+	   <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointCut"/>
+	</aop:config> 	        
+	         
+</beans>
