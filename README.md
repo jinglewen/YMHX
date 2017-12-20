@@ -1,1 +1,1 @@
-Welcome to the equipment background management system
+# Welcome to the equipment background management system
