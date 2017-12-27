@@ -64,11 +64,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<td align="right">密码：</td>
 						<td><input type="password" id="PassWord" placeholder="请输入密码" style="width: 150px;height: 25px;border: 1px solid #ccc"><span style="color: red;margin-left: 10px;" id="showPassWordMsg"></span></td>
 					</tr>
-					<tr>
+					<!-- <tr>
 						<td align="right">验证码：</td>
 						<td><input type="text" id="validatecode" style="width: 70px;height: 31px">
 						<img id="loginform:vCode" style="position: relative;top: 12px;width: 75px;height: 31px;" src="validatecode.jsp" onclick="javascript:document.getElementById('loginform:vCode').src='validatecode.jsp?'+Math.random();" /><span style="color: red;margin-left: 10px;" id="showVCodeMsg"></span></td>
-					</tr>
+					</tr> -->
 				</table>
 				
 				<input type="button" onclick="login()" value="登录" style="background-color: #4696EB;width: 70px;height: 30px;margin-left: 95px;margin-top: 15px;border: none;color: white;border-radius:5px;">
@@ -109,7 +109,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$("#showVCodeMsg").html("");
 			var userName = $("#UserName").val();
 			var passWord = $("#PassWord").val();
-			var vCode = $("#validatecode").val().toLowerCase();
+			//var vCode = $("#validatecode").val().toLowerCase();
 			
 			if(userName == "") {
 				$("#showUserNameMsg").html("请输入用户名");
@@ -117,14 +117,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}else if(passWord == "") {
 				$("#showPassWordMsg").html("请输入密码");
 				$('#PassWord').focus();
-			}else if(vCode == "") {
+			}/* else if(vCode == "") {
 				$("#showVCodeMsg").html("请输入验证码");
 				$('#validatecode').focus();
-			}else {
+			} */else {
 				var userInfo = {
 					UserName: userName,
 					PassWord: passWord,
-					vCode: vCode,
 				};
 				$.ajax({
 					url: "UserLogin.action",

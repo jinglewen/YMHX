@@ -38,14 +38,14 @@ public class UserinfoController {
 		}
 		String userName = request.getParameter("UserName");
 		String passWord = request.getParameter("PassWord");
-		String vCode = request.getParameter("vCode");
-		String validatecode = (String) request.getSession().getAttribute("key");
+		//String vCode = request.getParameter("vCode");
+		//String validatecode = (String) request.getSession().getAttribute("key");
 		//System.out.println(request.getSession().getAttribute("key"));
 		//System.out.println("username:"+userName+"-password:"+passWord+"-vCode:"+vCode);
 		//System.out.println(vCode.equals(validatecode));
 		UUserinfo u = userinfoServiceImp.UserLogin(userName, passWord);
 		Map<String, Object> map = new HashMap<String, Object>();
-		if(vCode.equals(validatecode)) {
+		//if(vCode.equals(validatecode)) {
 			if(u == null){
 				map.put("ErrorCode", 1);//用户名称或密码输入错误
 			}else{
@@ -89,9 +89,9 @@ public class UserinfoController {
 					}
 				}
 			}
-		}else {
+		/*}else {
 			map.put("ErrorCode", 500);//验证码不正确
-		}
+		}*/
 		PrintWriterUtil.Out(response, map);
 	}
 	
